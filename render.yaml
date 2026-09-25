@@ -6,12 +6,4 @@ services:
     healthCheckPath: /api/health
     envVars:
       - key: DATABASE_URL
-        fromDatabase:
-          name: radar-db
-          property: connectionString
-databases:
-  - name: radar-db
-    plan: free
-    databaseName: global_talent_radar
-    user: radar
-    postgresMajorVersion: "17"
+        sync: false
