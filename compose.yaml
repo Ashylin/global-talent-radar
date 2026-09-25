@@ -1,0 +1,26 @@
+services:
+  database:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: global_talent_radar
+      POSTGRES_USER: radar
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD:?Set DATABASE_PASSWORD in .env}
+    volumes:
+      - radar-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U radar -d global_talent_radar"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+  app:
+    build: .
+    ports: ["8080:8080"]
+    environment:
+      DATABASE_URL: jdbc:postgresql://database:5432/global_talent_radar
+      DATABASE_USERNAME: radar
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+    depends_on:
+      database:
+        condition: service_healthy
+volumes:
+  radar-data:
